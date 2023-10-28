@@ -1,15 +1,34 @@
-
-
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, d
 trigger:
-- master
+- master  # Define the branch to trigger the pipeline
+
+pr:
+- '*'  # Pull request triggers
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'  # Use a Windows agent
 
+variables:
+  solution: '**/*.sln'  # Path to your solution file
+  buildConfiguration: 'Release'  # Build configuration, e.g., Debug or Release
 
-- task: DotNetCoreCLI@2
+steps:
+- task: UseDotNet@2  # Use the .NET Core SDK
   inputs:
-    command: 'build'
+    packageType: 'sdk'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- script: dotnet restore
+  displayName: 'Restore NuGet packages'
+
+- script: dotnet build --configuration $(buildConfiguration) $(solution)
+  displayName: 'Build the solution'
+
+- script: dotnet publish $(solution) --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Publish the application'
+
+- task: PublishBuildArtifacts@1  # Publish the build artifacts
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+    publishLocation: 'Container'
 
