@@ -11,7 +11,7 @@ steps:
 - task: UseDotNet@2  # Use the .NET Core SDK
   inputs:
     packageType: 'sdk'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+    installationPath: $(Build.SourcesDirectory)
 
 - script: dotnet restore
   displayName: 'Restore NuGet packages'
