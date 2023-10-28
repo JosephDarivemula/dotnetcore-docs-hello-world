@@ -7,10 +7,6 @@ pr:
 pool:
   vmImage: 'windows-latest'  # Use a Windows agent
 
-variables:
-  solution: '**/*.sln'  # Path to your solution file
-  buildConfiguration: 'Release'  # Build configuration, e.g., Debug or Release
-
 steps:
 - task: UseDotNet@2  # Use the .NET Core SDK
   inputs:
